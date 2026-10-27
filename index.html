@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mellow Coffee — учебный пример Vibentry</title>
+  <meta name="description" content="Учебный сайт кофейни Mellow Coffee для курса Vibentry: меню, выбор напитка, корзина и демонстрационный заказ на самовывоз.">
+  <meta name="theme-color" content="#F8F2E8">
+  <link rel="icon" href="assets/img/bean.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#menu">Перейти к меню</a>
+
+  <div class="demo-strip" role="note">
+    <span class="demo-strip__badge">Учебный пример Vibentry</span>
+    <span class="demo-strip__text">Кофейня, цены и контакты вымышленные. Заказы не отправляются.</span>
+  </div>
+
+  <header class="site-header" id="top">
+    <div class="container site-header__inner">
+      <a class="logo" href="#top" aria-label="Mellow Coffee, наверх страницы">
+        <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <ellipse cx="20" cy="20" rx="8.5" ry="12" fill="currentColor" transform="rotate(28 20 20)"/>
+          <path d="M16.5 9.5c-3 6 7 14 3.5 21" fill="none" stroke="var(--milk)" stroke-width="1.8" stroke-linecap="round" transform="rotate(28 20 20)"/>
+        </svg>
+        <span class="logo__text">Mellow Coffee</span>
+      </a>
+      <nav class="site-nav" aria-label="Разделы">
+        <a href="#menu">Меню</a>
+        <a href="#about">О кофейне</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <button class="cart-button" type="button" id="cartOpen" aria-haspopup="dialog" aria-controls="cartDrawer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="cart-button__icon">
+          <path d="M5 8h14l-1.3 10.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span class="cart-button__label">Корзина</span>
+        <span class="cart-button__count" id="cartCount" aria-live="polite">0</span>
+        <span class="visually-hidden" id="cartCountText">Товаров в корзине: 0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Первый экран -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <h1 class="hero__title" id="heroTitle">Кофе без спешки</h1>
+          <p class="hero__lead">Небольшая кофейня с тёплым светом, деревянной стойкой и&nbsp;чашкой, которую готовят под вас. Задержитесь на пару глотков или заберите напиток с&nbsp;собой.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#menu">Выбрать кофе</a>
+            <a class="btn btn--ghost" href="#about">О кофейне</a>
+          </div>
+          <p class="hero__hours">
+            <span class="dot" aria-hidden="true"></span>
+            <span>Ежедневно <span id="heroHours">08:00–21:00</span>, учебный график</span>
+          </p>
+        </div>
+        <div class="hero__visual">
+          <div class="hero__rings" aria-hidden="true"></div>
+          <img class="hero__img" src="assets/img/hero-cup.svg" width="600" height="600"
+               alt="Капучино с латте-артом в форме листа на шалфейном блюдце, рядом ложка и кофейные зёрна">
+        </div>
+      </div>
+    </section>
+
+    <!-- Меню -->
+    <section class="menu section" id="menu" aria-labelledby="menuTitle">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="section-title" id="menuTitle">Меню</h2>
+          <p class="section-sub">Выберите напиток, чтобы настроить объём, молоко и&nbsp;сироп. Цены учебные.</p>
+        </div>
+
+        <div class="menu-tools">
+          <div class="chips" role="group" aria-label="Категории меню" id="categoryChips"></div>
+          <div class="search">
+            <label class="visually-hidden" for="menuSearch">Поиск по названию</label>
+            <svg class="search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input class="search__input" id="menuSearch" type="search" placeholder="Найти по названию" autocomplete="off" enterkeyhint="search">
+            <button class="search__clear" type="button" id="searchClear" aria-label="Очистить поиск" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="menu-status visually-hidden" id="menuStatus" aria-live="polite"></p>
+        <div class="product-grid" id="productGrid"></div>
+
+        <div class="empty-state" id="menuEmpty" hidden>
+          <img src="assets/img/bean.svg" alt="" width="40" height="40">
+          <h3 class="empty-state__title">Ничего не нашлось</h3>
+          <p class="empty-state__text" id="menuEmptyText">Попробуйте другое название.</p>
+          <button class="btn btn--primary" type="button" id="searchReset">Сбросить поиск</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- О кофейне -->
+    <section class="about section" id="about" aria-labelledby="aboutTitle">
+      <div class="container about__inner">
+        <div class="about__intro">
+          <h2 class="section-title" id="aboutTitle">О кофейне</h2>
+          <p class="about__lead">Mellow значит «мягкий, неторопливый». Мы хотели место, где можно выдохнуть между делами: несколько столиков, растения на подоконнике и&nbsp;спокойная музыка.</p>
+        </div>
+        <ul class="about__list">
+          <li class="about-item">
+            <svg class="about-item__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 36h28M14 36V22a10 10 0 0 1 20 0v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M24 12V8M17 14l-2-3M31 14l2-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <h3 class="about-item__title">Атмосфера</h3>
+            <p>Дерево, лён и мягкий свет. Можно работать за ноутбуком или просто посидеть у окна.</p>
+          </li>
+          <li class="about-item">
+            <svg class="about-item__icon" viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="24" cy="24" rx="9" ry="13" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(25 24 24)"/><path d="M20 12c-4 8 8 16 4 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" transform="rotate(25 24 24)"/></svg>
+            <h3 class="about-item__title">Подход к напиткам</h3>
+            <p>Готовим каждую чашку под заказ: подбираем объём, молоко и крепость так, как вам нравится.</p>
+          </li>
+          <li class="about-item">
+            <svg class="about-item__icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M15 14h18l-2 26H17l-2-26Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 14h22M17 14l1-5h12l1 5M16 24h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <h3 class="about-item__title">С собой</h3>
+            <p>Любой напиток можно взять в стакане с крышкой. Закажите заранее, и он будет ждать на стойке.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Самовывоз -->
+    <section class="pickup section" id="pickup" aria-labelledby="pickupTitle">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="section-title" id="pickupTitle">Самовывоз</h2>
+          <p class="section-sub">Оформите заказ на сайте и заберите его у стойки без очереди. В учебной версии заказ сохраняется только в вашем браузере.</p>
+        </div>
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num" aria-hidden="true">1</span>
+            <h3 class="step__title">Выберите напитки</h3>
+            <p>Настройте объём, молоко и добавки в окне товара.</p>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">2</span>
+            <h3 class="step__title">Проверьте корзину</h3>
+            <p>Измените количество или уберите лишнее.</p>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">3</span>
+            <h3 class="step__title">Укажите имя и время</h3>
+            <p>«Как можно скорее» или удобное время в течение дня.</p>
+          </li>
+          <li class="step">
+            <span class="step__num" aria-hidden="true">4</span>
+            <h3 class="step__title">Заберите заказ</h3>
+            <p>Назовите номер заказа у стойки, и бариста отдаст его.</p>
+          </li>
+        </ol>
+        <div class="pickup__cta">
+          <a class="btn btn--primary" href="#menu">Перейти к меню</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Контакты -->
+    <section class="contacts section" id="contacts" aria-labelledby="contactsTitle">
+      <div class="container contacts__inner">
+        <div class="contacts__info">
+          <h2 class="section-title" id="contactsTitle">Контакты</h2>
+          <p class="contacts__note" role="note">Учебные данные. Настоящие контакты добавит заказчик.</p>
+          <dl class="contact-list">
+            <div class="contact-list__row">
+              <dt>Адрес</dt>
+              <dd><span class="fill-me">[заполнить: адрес кофейни]</span></dd>
+            </div>
+            <div class="contact-list__row">
+              <dt>Часы работы</dt>
+              <dd>Ежедневно 08:00–21:00 <span class="muted">(учебный график)</span></dd>
+            </div>
+            <div class="contact-list__row">
+              <dt>Телефон</dt>
+              <dd><span class="fill-me">[заполнить: телефон]</span></dd>
+            </div>
+            <div class="contact-list__row">
+              <dt>Почта и соцсети</dt>
+              <dd><span class="fill-me">[заполнить: почта, мессенджеры]</span></dd>
+            </div>
+          </dl>
+          <div class="contacts__actions">
+            <button class="btn btn--primary js-demo-contact" type="button">Позвонить</button>
+            <button class="btn btn--ghost js-demo-contact" type="button">Написать нам</button>
+            <button class="btn btn--ghost js-demo-contact" type="button">Построить маршрут</button>
+          </div>
+          <p class="demo-message" id="contactMessage" role="status" hidden>Учебный пример: здесь подключается контакт заказчика</p>
+        </div>
+        <figure class="contacts__map">
+          <svg viewBox="0 0 480 360" role="img" aria-labelledby="mapTitle">
+            <title id="mapTitle">Условная схема: кофейня на перекрёстке рядом со сквером</title>
+            <rect width="480" height="360" rx="28" fill="#EFE5D3"/>
+            <path d="M0 120 C120 110 200 150 300 130 S420 90 480 100" fill="none" stroke="#FBF7F0" stroke-width="26"/>
+            <path d="M190 0 C200 120 170 220 210 360" fill="none" stroke="#FBF7F0" stroke-width="22"/>
+            <path d="M0 270 L480 250" fill="none" stroke="#FBF7F0" stroke-width="16"/>
+            <path d="M340 0 L360 360" fill="none" stroke="#FBF7F0" stroke-width="12"/>
+            <rect x="236" y="160" width="86" height="68" rx="16" fill="#B9C6B2"/>
+            <circle cx="262" cy="186" r="9" fill="#8FA38A"/><circle cx="292" cy="204" r="11" fill="#8FA38A"/><circle cx="276" cy="212" r="6" fill="#8FA38A"/>
+            <rect x="30" y="160" width="130" height="80" rx="12" fill="#E4D5BC"/>
+            <rect x="380" y="140" width="80" height="90" rx="12" fill="#E4D5BC"/>
+            <rect x="30" y="20" width="130" height="66" rx="12" fill="#E4D5BC"/>
+            <rect x="236" y="20" width="84" height="76" rx="12" fill="#E4D5BC"/>
+            <circle cx="202" cy="132" r="40" fill="none" stroke="#4A2E20" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="3 6"/>
+            <path d="M202 140c-14-16-22-26-22-38a22 22 0 0 1 44 0c0 12-8 22-22 38Z" fill="#3E2619"/>
+            <circle cx="202" cy="102" r="8" fill="#F8F2E8"/>
+          </svg>
+          <figcaption>Схема условная. Точный адрес — [заполнить].</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div>
+        <p class="site-footer__logo">Mellow Coffee</p>
+        <p class="site-footer__tag">Учебный проект Vibentry</p>
+      </div>
+      <p class="site-footer__small">Вымышленная кофейня для курса. Данные, цены и заказы демонстрационные, оплата не принимается. Иллюстрации нарисованы для проекта, шрифты Lora и Manrope распространяются по лицензии SIL OFL&nbsp;1.1.</p>
+      <a class="site-footer__top" href="#top">Наверх</a>
+    </div>
+  </footer>
+
+  <!-- Окно выбора напитка -->
+  <div class="overlay" id="productModal" hidden>
+    <div class="overlay__backdrop" data-close></div>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <button class="icon-btn modal__close" type="button" data-close aria-label="Закрыть окно">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <form class="modal__form" id="productForm" novalidate>
+        <div class="modal__media">
+          <img id="modalImage" src="" alt="" width="400" height="320">
+        </div>
+        <div class="modal__body">
+          <h2 class="modal__title" id="modalTitle"></h2>
+          <p class="modal__desc" id="modalDesc"></p>
+          <div id="modalOptions"></div>
+        </div>
+        <div class="modal__footer">
+          <div class="qty" role="group" aria-label="Количество">
+            <button class="qty__btn" type="button" data-qty="-1" aria-label="Уменьшить количество">−</button>
+            <output class="qty__value" id="modalQty" aria-live="polite">1</output>
+            <button class="qty__btn" type="button" data-qty="1" aria-label="Увеличить количество">+</button>
+          </div>
+          <button class="btn btn--primary btn--wide modal__add" type="submit">
+            <span>Добавить в заказ</span>
+            <span class="modal__total" id="modalTotal" aria-live="polite"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Корзина и оформление -->
+  <div class="overlay overlay--drawer" id="cartDrawer" hidden>
+    <div class="overlay__backdrop" data-close></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1">
+      <header class="drawer__head">
+        <button class="icon-btn drawer__back" type="button" id="drawerBack" aria-label="Вернуться к корзине" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 class="drawer__title" id="drawerTitle">Корзина</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Закрыть корзину">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <!-- Вид: корзина -->
+      <div class="drawer__view" id="viewCart">
+        <div class="drawer__scroll">
+          <ul class="cart-list" id="cartList"></ul>
+          <div class="empty-state empty-state--cart" id="cartEmpty" hidden>
+            <img src="assets/img/espresso.svg" alt="" width="200" height="160">
+            <h3 class="empty-state__title">В корзине пока пусто</h3>
+            <p class="empty-state__text">Загляните в меню и выберите напиток.</p>
+            <button class="btn btn--primary" type="button" id="goToMenu">Перейти к меню</button>
+          </div>
+        </div>
+        <div class="drawer__foot" id="cartFoot">
+          <div class="total-row"><span>Итого</span><strong id="cartSum">0 ₽</strong></div>
+          <button class="btn btn--primary btn--wide" type="button" id="toCheckout">Оформить самовывоз</button>
+        </div>
+      </div>
+
+      <!-- Вид: оформление -->
+      <form class="drawer__view" id="viewCheckout" novalidate hidden>
+        <div class="drawer__scroll">
+          <div class="field">
+            <label class="field__label" for="fName">Имя</label>
+            <input class="field__input" id="fName" name="name" type="text" autocomplete="given-name" maxlength="40" required aria-describedby="fNameErr">
+            <p class="field__error" id="fNameErr" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <label class="field__label" for="fPhone">Телефон</label>
+            <input class="field__input" id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00" maxlength="20" required aria-describedby="fPhoneHint fPhoneErr">
+            <p class="field__hint" id="fPhoneHint">11 цифр, номер нужен только для связи по заказу.</p>
+            <p class="field__error" id="fPhoneErr" aria-live="polite"></p>
+          </div>
+          <fieldset class="field">
+            <legend class="field__label">Когда забрать</legend>
+            <div class="seg">
+              <label class="seg__opt"><input type="radio" name="mode" value="asap" id="modeAsap"><span>Как можно скорее</span></label>
+              <label class="seg__opt"><input type="radio" name="mode" value="time" id="modeTime"><span>Ко времени</span></label>
+            </div>
+            <p class="field__hint" id="asapHint"></p>
+            <div class="time-pick" id="timePick" hidden>
+              <div class="time-pick__col">
+                <label class="field__label field__label--sm" for="fDay">День</label>
+                <select class="field__input" id="fDay" name="day">
+                  <option value="today">Сегодня</option>
+                  <option value="tomorrow">Завтра</option>
+                </select>
+              </div>
+              <div class="time-pick__col">
+                <label class="field__label field__label--sm" for="fTime">Время</label>
+                <input class="field__input" id="fTime" name="time" type="time" step="900" min="08:00" max="20:45">
+              </div>
+            </div>
+            <p class="field__hint">Учебный график: заказы с <span id="schedFrom">08:00</span> до <span id="schedTo">20:45</span>, приготовление от 15 минут.</p>
+            <p class="field__error" id="fTimeErr" aria-live="polite"></p>
+          </fieldset>
+          <div class="field">
+            <label class="field__label" for="fComment">Комментарий <span class="muted">необязательно</span></label>
+            <textarea class="field__input field__input--area" id="fComment" name="comment" rows="3" maxlength="200" placeholder="Например: без крышки, покрепче"></textarea>
+          </div>
+
+          <section class="summary" aria-labelledby="summaryTitle">
+            <h3 class="summary__title" id="summaryTitle">Ваш заказ</h3>
+            <ul class="summary__list" id="summaryList"></ul>
+            <div class="total-row"><span>Итого</span><strong id="summarySum">0 ₽</strong></div>
+          </section>
+        </div>
+        <div class="drawer__foot">
+          <p class="demo-warning">Демонстрационный заказ. Данные не отправляются в кофейню, оплата не списывается.</p>
+          <p class="field__error field__error--form" id="formErr" aria-live="assertive"></p>
+          <button class="btn btn--primary btn--wide" type="submit" id="confirmBtn">
+            <span class="btn__label">Подтвердить учебный заказ</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Вид: готово -->
+      <div class="drawer__view" id="viewDone" hidden>
+        <div class="drawer__scroll">
+          <div class="done">
+            <svg class="done__icon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 33 8 8 16-17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="done__label">Учебный заказ сохранён в браузере</p>
+            <p class="done__number" id="doneNumber"></p>
+            <p class="done__time" id="doneTime"></p>
+            <p class="demo-warning">Демонстрационный заказ. Данные не отправляются в кофейню, оплата не списывается.</p>
+          </div>
+          <section class="summary" aria-label="Состав заказа">
+            <ul class="summary__list" id="doneList"></ul>
+            <div class="total-row"><span>Итого</span><strong id="doneSum"></strong></div>
+          </section>
+        </div>
+        <div class="drawer__foot">
+          <button class="btn btn--primary btn--wide" type="button" id="doneClose">Вернуться к меню</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="data.js"></script>
+  <script src="pricing.js"></script>
+  <script src="orders.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
