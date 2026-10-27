@@ -28,7 +28,8 @@ npx serve .
 | `pricing.js` | Расчёты в копейках, форматирование цены, проверки имени, телефона и времени |
 | `orders.js` | Сохранение учебного заказа. Отделено от интерфейса, сюда подключается сервер |
 | `script.js` | Работа интерфейса: меню, поиск, окно товара, корзина и оформление |
-| `assets/img/` | SVG-иллюстрации товаров и первого экрана |
+| `assets/photos/` | Фотографии товаров и кофейни (Unsplash, см. ниже) |
+| `assets/img/` | Иконка зерна (SVG) |
 | `assets/fonts/` | Шрифты Lora и Manrope (woff2) с лицензиями |
 | `screenshots/` | Скриншоты проверки |
 
@@ -38,7 +39,7 @@ npx serve .
 
 ```js
 { id: 'latte', category: 'coffee', name: 'Латте', price: 24000, // 240 ₽ в копейках
-  description: '…', image: 'assets/img/latte.svg',
+  description: '…', image: 'assets/photos/latte.jpg',
   sizes: 'cup',      // набор объёмов из SIZES или null
   milk: true, extraShot: true, syrup: true }
 ```
@@ -48,6 +49,12 @@ npx serve .
 ### Как подключить сервер
 
 В `orders.js` замените тело функции `submit(order)` на запрос к API, например `fetch('/api/orders', …)`. Функция должна вернуть Promise с сохранённым заказом. Интерфейс менять не нужно.
+
+## Разделы главной страницы
+
+Первый экран с фото и короткими фактами о меню, бегущая строка, подборка «С чего начать», меню, подбор напитка в два вопроса, «О кофейне» с фотоколлажем, «Как готовим вашу чашку», самовывоз по шагам, частые вопросы, контакты и подвал.
+
+Оформление: тёмная тёплая палитра (эспрессо, карамель, латте, приглушённый шалфей). У кнопок при наведении есть подъём, заливка слева направо и блик, у стрелки внутри кнопки — сдвиг. Карточки при наведении поднимаются, фото в них плавно приближается. Ссылки меню подчёркиваются, иконка корзины покачивается. При включённой настройке «уменьшить движение» (`prefers-reduced-motion`) анимации отключаются.
 
 ## Демонстрационные функции
 
@@ -70,14 +77,44 @@ npx serve .
 
 ## Изображения и шрифты: источники и условия
 
-| Ресурс | Источник | Условия |
-| --- | --- | --- |
-| Все иллюстрации в `assets/img/*.svg` (напитки, десерты, чашка на первом экране, зерно) и схема в контактах | Нарисованы для этого проекта в SVG | Собственная работа, можно свободно использовать в учебном проекте |
-| Шрифт **Lora** (заголовки) | Cyreal, сборка [Fontsource](https://fontsource.org/fonts/lora) | SIL Open Font License 1.1, файл `assets/fonts/OFL-lora.txt` |
-| Шрифт **Manrope** (текст) | Mikhail Sharanda, сборка [Fontsource](https://fontsource.org/fonts/manrope) | SIL Open Font License 1.1, файл `assets/fonts/OFL-manrope.txt` |
-| Фактура фона | Встроенный SVG-шум (`feTurbulence`) в `styles.css` | Собственная работа |
+**Фотографии** (`assets/photos/`) взяты с [Unsplash](https://unsplash.com) и сохранены локально. Сайт не подгружает их из интернета.
+Они распространяются по [лицензии Unsplash](https://unsplash.com/license): бесплатное использование, в том числе коммерческое, без обязательного указания автора. Запрещено только собирать фото, чтобы сделать похожий или конкурирующий фотосервис. Авторов мы всё равно указываем:
 
-Шрифты лежат локально. Сайт не загружает ничего из интернета. Проверено, что в шрифтах есть кириллица, цифры и знак ₽ (U+20BD находится в подмножестве `latin-ext`, оно подключено).
+| Файл | Автор | Источник |
+| --- | --- | --- |
+| `assets/photos/espresso.jpg` | Katt Galvan | [страница фото](https://unsplash.com/photos/3v0vppDjvMI) |
+| `assets/photos/americano.jpg` | Mehmet Talha Onuk | [страница фото](https://unsplash.com/photos/MBeY2m00Ybc) |
+| `assets/photos/cappuccino.jpg` | Dani | [страница фото](https://unsplash.com/photos/ZLqxSzvVr7I) |
+| `assets/photos/latte.jpg` | Billy Kwok | [страница фото](https://unsplash.com/photos/vfiA7rRtjWo) |
+| `assets/photos/flat-white.jpg` | Jonas Jacobsson | [страница фото](https://unsplash.com/photos/RFHFV7lVQBY) |
+| `assets/photos/raf.jpg` | Kamil Switalski | [страница фото](https://unsplash.com/photos/bbNssNJlsrk) |
+| `assets/photos/iced-latte.jpg` | Demi DeHerrera | [страница фото](https://unsplash.com/photos/L-sm1B4L1Ns) |
+| `assets/photos/cold-brew.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/_Wm6mhXO9rk) |
+| `assets/photos/espresso-tonic.jpg` | Max Nayman | [страница фото](https://unsplash.com/photos/ZLhJiLWg74E) |
+| `assets/photos/matcha-latte.jpg` | Jason Leung | [страница фото](https://unsplash.com/photos/Z-hvocTfR_s) |
+| `assets/photos/iced-matcha.jpg` | Olena Bohovyk | [страница фото](https://unsplash.com/photos/N1rmKN_EOaA) |
+| `assets/photos/tea.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/8yBQQqH3q8Q) |
+| `assets/photos/croissant.jpg` | Mae Mu | [страница фото](https://unsplash.com/photos/m9pzwmxm2rk) |
+| `assets/photos/cheesecake.jpg` | Tina Guina | [страница фото](https://unsplash.com/photos/s8_7AqkzCWY) |
+| `assets/photos/cookie.jpg` | Shakti Rajpurohit | [страница фото](https://unsplash.com/photos/qczubsyHofQ) |
+| `assets/photos/hero.jpg` | Harris Vo | [страница фото](https://unsplash.com/photos/JpQGEArmG0I) |
+| `assets/photos/latte-art-top.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/ikU3J1nr52w) |
+| `assets/photos/beans.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/Y3AqmbmtLQI) |
+| `assets/photos/interior.jpg` | Louis Hansel | [страница фото](https://unsplash.com/photos/qoPAjwEiUmg) |
+| `assets/photos/interior-bar.jpg` | Nafinia Putra | [страница фото](https://unsplash.com/photos/Kwdp-0pok-I) |
+| `assets/photos/barista.jpg` | Brent Gorwin | [страница фото](https://unsplash.com/photos/vhQUnmnOLys) |
+| `assets/photos/takeaway.jpg` | Ceyda Çiftci | [страница фото](https://unsplash.com/photos/nNjxgeGuzAs) |
+| `assets/photos/barista-pour.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/jRPxc8VGqco) |
+
+Фото обрезаны и уменьшены через параметры CDN Unsplash (`w`, `h`, `fit=crop`).
+
+| Прочие ресурсы | Источник | Условия |
+| --- | --- | --- |
+| `assets/img/bean.svg` (иконка зерна), схема в контактах, иконки | Нарисованы для проекта в SVG | Собственная работа |
+| Шрифт **Lora** (заголовки) | Cyreal, сборка [Fontsource](https://fontsource.org/fonts/lora) | SIL Open Font License 1.1, `assets/fonts/OFL-lora.txt` |
+| Шрифт **Manrope** (текст) | Mikhail Sharanda, сборка [Fontsource](https://fontsource.org/fonts/manrope) | SIL Open Font License 1.1, `assets/fonts/OFL-manrope.txt` |
+
+В шрифтах проверено наличие кириллицы, цифр и знака ₽ (U+20BD находится в подмножестве `latin-ext`, оно подключено).
 
 ## Выполненные проверки
 
@@ -101,5 +138,11 @@ npx serve .
 - [x] Кнопки контактов показывают учебное сообщение.
 - [x] На ширине 390 и 320 px нет горизонтальной прокрутки ни на странице, ни в открытом окне. Корзина занимает весь экран. Кнопки и поля в открытой панели не ниже 40 px.
 - [x] В консоли браузера нет ошибок (компьютер, 390 и 320 px).
+- [x] Подборка «С чего начать» показывает 4 карточки, клик открывает окно нужного напитка.
+- [x] Подбор напитка: «Без кофе» + «Холодный» предлагает айс-матчу, кнопка в результате открывает окно этого напитка.
+- [x] Блок частых вопросов раскрывается.
+- [x] При наведении основная кнопка поднимается на 3 px, заливка разворачивается (проверено по вычисленным стилям).
+
+Ответы в частых вопросах повторяют надбавки из `data.js`. Если меняете цены, поправьте и их.
 
 Не проверялось на реальных устройствах: поведение экранной клавиатуры на iOS и Android. В коде активное поле прокручивается в центр видимой области, а высота панели подстраивается под `visualViewport`.

@@ -322,6 +322,74 @@
     menuStatus.textContent = empty ? 'Ничего не найдено' : 'Показано позиций: ' + list.length;
   }
 
+  /* ---------- Подборка «С чего начать» ---------- */
+
+  function renderFeatured() {
+    var root = $('#featuredGrid');
+    if (!root) return;
+    root.innerHTML = '';
+    D.featured.forEach(function (id) {
+      var p = P.getProduct(id);
+      if (!p) return;
+      var range = P.hasPriceRange(p);
+      var btn = el('button', {
+        class: 'feat', type: 'button',
+        'aria-label': 'Выбрать: ' + p.name + (range ? ', от ' : ', ') + P.formatPrice(P.minPrice(p)).replace(' ', ' ')
+      }, [
+        el('img', { src: p.image, alt: '', width: '900', height: '700', loading: 'lazy', decoding: 'async' }),
+        el('span', { class: 'feat__body' }, [
+          el('span', {}, [
+            el('span', { class: 'feat__name', text: p.name }),
+            el('span', { class: 'feat__desc', text: p.description })
+          ]),
+          el('span', { class: 'feat__price', text: (range ? 'от ' : '') + P.formatPrice(P.minPrice(p)) })
+        ])
+      ]);
+      btn.addEventListener('click', function () { openProduct(p.id, btn); });
+      root.appendChild(btn);
+    });
+  }
+
+  /* ---------- Подбор напитка ---------- */
+
+  function initQuiz() {
+    var form = $('#quizForm');
+    if (!form) return;
+    var result = $('#quizResult');
+    function fill(rootId, name, items) {
+      var root = $(rootId);
+      items.forEach(function (it) {
+        root.appendChild(el('label', { class: 'quiz__opt' }, [
+          el('input', { type: 'radio', name: name, value: it.id }),
+          el('span', { text: it.label })
+        ]));
+      });
+    }
+    fill('#quizTaste', 'taste', D.quiz.taste);
+    fill('#quizTemp', 'temp', D.quiz.temp);
+
+    form.addEventListener('change', function () {
+      var taste = form.querySelector('input[name="taste"]:checked');
+      var temp = form.querySelector('input[name="temp"]:checked');
+      if (!taste || !temp) return;
+      var pick = D.quiz.result[taste.value + '-' + temp.value];
+      var p = pick && P.getProduct(pick.id);
+      if (!p) return;
+      $('#quizHint').hidden = true;
+      result.hidden = false;
+      result.innerHTML = '';
+      var btn = el('button', { class: 'btn btn--primary btn--sm', type: 'button' }, ['Выбрать ' + p.name.toLowerCase()]);
+      btn.addEventListener('click', function () { openProduct(p.id, btn); });
+      result.appendChild(el('img', { src: p.image, alt: '', width: '120', height: '120' }));
+      result.appendChild(el('div', {}, [
+        el('p', { class: 'quiz__result-name', text: p.name + ', ' + (P.hasPriceRange(p) ? 'от ' : '') + P.formatPrice(P.minPrice(p)) }),
+        el('p', { class: 'quiz__result-why', text: pick.why }),
+        btn
+      ]));
+    });
+    form.addEventListener('submit', function (e) { e.preventDefault(); });
+  }
+
   function resetSearch() {
     state.query = '';
     state.category = 'all';
@@ -860,6 +928,8 @@
 
   renderChips();
   renderMenu();
+  renderFeatured();
+  initQuiz();
   renderCart();
 
   // Обновлять доступность «Как можно скорее», если форма открыта долго.
