@@ -101,7 +101,6 @@ npx serve .
 | `assets/photos/latte-art-top.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/ikU3J1nr52w) |
 | `assets/photos/beans.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/Y3AqmbmtLQI) |
 | `assets/photos/interior.jpg` | Louis Hansel | [страница фото](https://unsplash.com/photos/qoPAjwEiUmg) |
-| `assets/photos/interior-bar.jpg` | Nafinia Putra | [страница фото](https://unsplash.com/photos/Kwdp-0pok-I) |
 | `assets/photos/barista.jpg` | Brent Gorwin | [страница фото](https://unsplash.com/photos/vhQUnmnOLys) |
 | `assets/photos/takeaway.jpg` | Ceyda Çiftci | [страница фото](https://unsplash.com/photos/nNjxgeGuzAs) |
 | `assets/photos/barista-pour.jpg` | Nathan Dumlao | [страница фото](https://unsplash.com/photos/jRPxc8VGqco) |
